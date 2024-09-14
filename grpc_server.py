@@ -47,5 +47,5 @@ def serve():
     print("Servidor gRPC iniciado en el puerto 50051")
     server.wait_for_termination()
 
-if _name_ == "_main_":
+if __name__ == "_main_":
     serve()
