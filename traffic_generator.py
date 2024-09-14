@@ -22,7 +22,7 @@ def generate_traffic():
             domain = random.choice(repeat_domains)
 
         # Hacer una solicitud a la API
-        response = requests.post("http://localhost:8000/text", json={"text": domain})
+        response = requests.post("http://127.0.0.1:8000/text", json={"text": domain})
         
         if response.status_code == 200:
             print(f"Consulta {index + 1}: {domain} almacenado en caché.")
@@ -32,5 +32,5 @@ def generate_traffic():
         # Introducir un pequeño delay para simular tráfico real
         time.sleep(0.1)
 
-if _name_ == "_main_":
+if __name__ == "_main_":
     generate_traffic()
