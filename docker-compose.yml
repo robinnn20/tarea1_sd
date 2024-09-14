@@ -1,0 +1,56 @@
+version: '3.9'
+services:
+  redis-node-1:
+    image: bitnami/redis:latest
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_CLUSTER_ENABLED=yes
+      - REDIS_NODES=redis-node-1 redis-node-2
+      - REDIS_PASSWORD=yourpassword
+      - REDIS_MAXMEMORY_POLICY=allkeys-lru
+      - REDIS_MAXMEMORY=100mb
+    ports:
+      - 7000:6379
+    volumes:
+      - redis-node-1-data:/bitnami/redis/data
+    networks:
+      - redis-network
+
+  redis-node-2:
+    image: bitnami/redis:latest
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_CLUSTER_ENABLED=yes
+      - REDIS_NODES=redis-node-1 redis-node-2
+      - REDIS_PASSWORD=yourpassword
+      - REDIS_MAXMEMORY_POLICY=allkeys-lru
+      - REDIS_MAXMEMORY=100mb
+    ports:
+      - 7001:6379
+    volumes:
+      - redis-node-2-data:/bitnami/redis/data
+    networks:
+      - redis-network
+
+  fastapi:
+    build: .
+    ports:
+      - 8000:8000
+  networks:
+      - redis-network
+
+  grpc-server:
+    build: .
+    command: python3 grpc_server.py  # Asegúrate de que este comando arranque el servidor gRPC
+    ports:
+      - 50051:50051
+    networks:
+      - redis-network
+
+volumes:
+  redis-node-1-data:
+  redis-node-2-data:
+
+networks:
+  redis-network:
+    driver: bridge
